@@ -1,5 +1,9 @@
 ﻿using ClientTestSignalR_1.Commands;
+using ClientTestSignalR_1.Services;
+using ClientTestSignalR_1.Services.Interfaces;
 using Microsoft.AspNetCore.SignalR.Client;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -18,6 +22,12 @@ namespace ClientTestSignalR_1.ViewModels
         public VM()
         {
             _dispatcher = Dispatcher.CurrentDispatcher;
+            
+            if (Program.host != null) //получаем сервис записи сообщений в ListBox 
+            {
+                writeMessageListService = Program.host.Services.GetService<WriteMessageListService>();
+            }
+                        
         }
 
         #endregion == Constructor ==
@@ -27,6 +37,11 @@ namespace ClientTestSignalR_1.ViewModels
         HubConnection? connection; // объявляем подключение для работы с сервером (хабом)
 
         Dispatcher _dispatcher; // для работы с элементами WPF в главном потоке
+
+        /// <summary>
+        /// //для получения из Хаба сервиса записи сообщений в ListBox
+        /// </summary>
+        IWriteMessageService? writeMessageListService; 
 
         #endregion == Fields ==
 
@@ -216,9 +231,9 @@ namespace ClientTestSignalR_1.ViewModels
                 {
                     await connection.StartAsync();
                 }
-                
-                MessageList.Add("Соединение установлено");
-                
+
+                writeMessageListService?.WriteMessage(MessageList, "Соединение установлено");
+                                
                 ButtonSendEnable = true;
 
                 ButtonDisconnectEnable = true;
@@ -241,9 +256,9 @@ namespace ClientTestSignalR_1.ViewModels
                 if (connection != null)
                 {
                     await connection.StopAsync();
-                }
-                    
-                MessageList.Add("Соединение отключено");
+                }               
+
+                writeMessageListService?.WriteMessage(MessageList, "Соединение отключено");
 
                 ButtonConnectEnable = true;
 
@@ -295,10 +310,13 @@ namespace ClientTestSignalR_1.ViewModels
             {
                 _dispatcher.Invoke(() =>
                 {
-                    var newMessage = $"{user}: {message}";
-                    MessageList.Add(newMessage);                     
+                    string? newMessage = $"{user}: {message}";
+                    
+                    writeMessageListService?.WriteMessage(MessageList, newMessage);
+
                 });
             });
+            
         }
         #endregion == Methods ==
 
