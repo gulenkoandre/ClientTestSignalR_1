@@ -11,6 +11,9 @@ using System.Windows.Threading;
 
 namespace ClientTestSignalR_1.Services
 {
+    /// <summary>
+    /// сервис передачи сообщений на сервер посредством HubConnection
+    /// </summary>
     class ConnectionServer : IConnectionService
     {
         #region == Constructor ==========================================================================================
@@ -19,7 +22,7 @@ namespace ClientTestSignalR_1.Services
         {
             if (Program.host != null)
             {
-                writeMessageListService = Program.host.Services.GetService<WriteMessageListService>(); //сервис для вывода сообщений в MessageList
+                writeMessageListService = Program.host.Services.GetService<WriteMessageListService>(); //сервис для добавления сообщений в общий список
             }
         }
 
@@ -46,33 +49,20 @@ namespace ClientTestSignalR_1.Services
         public string? Address { get; set;}
 
         /// <summary>
-        /// тип соединения, передаваемый через object? например HubConnection? connection;
-        /// </summary>
-        //public object? ConnectionObj { get; set; }
-
-        /// <summary>
-        /// объект лога сообщений, передаваемый через object? например ObservableCollection<string> MessageList
+        /// объект лога сообщений, передаваемый через object
         /// </summary>
         public object? MessageListObj { get; set;}
-
+        
         /// <summary>
         /// установление соединения
         /// </summary>
         public async void Connect()
-        {
-            /*IWriteMessageService? writeMessageListService = null; 
-
-            if (Program.host!=null)
-            {
-                writeMessageListService = Program.host.Services.GetService<WriteMessageListService>(); //сервис для вывода сообщений в MessageList
-            }*/
+        {            
             //создание подключения к хабу
-            connection= new HubConnectionBuilder() //ConnectionObj = new HubConnectionBuilder()
+            connection= new HubConnectionBuilder() 
                 .WithUrl($"{Address}")
                 .Build();
-
-            //connection = ConnectionObj as HubConnection;
-
+            
             // регистрация функции Receive для получения данных с сервера
             connection?.On<string, string>("Receive", (user, message) =>
             {
@@ -101,8 +91,6 @@ namespace ClientTestSignalR_1.Services
         /// </summary>
         public async void Disconnect()
         {
-            //connection = ConnectionObj as HubConnection;
-
             //отключение
             if (connection != null)
              {

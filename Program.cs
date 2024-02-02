@@ -1,5 +1,6 @@
 ﻿using ClientTestSignalR_1.Services;
 using ClientTestSignalR_1.Services.Interfaces;
+using ClientTestSignalR_1.ViewModels;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
@@ -16,16 +17,16 @@ namespace ClientTestSignalR_1
         public static void Main()
         {
             // создаем хост приложения            
-                 host = Host.CreateDefaultBuilder()
+            host = Host.CreateDefaultBuilder()
                 
                 // внедряем сервисы
                 .ConfigureServices(services =>
                 {
                     services.AddSingleton<App>();
                     services.AddSingleton<MainWindow>();
-
-                    services.AddTransient<WriteMessageListService>();
-                    services.AddTransient<ConnectionServer>();
+                 
+                    services.AddSingleton<WriteMessageListService>();
+                    services.AddSingleton<ConnectionServer>();
                 })
                 .Build();
             

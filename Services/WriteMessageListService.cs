@@ -11,7 +11,7 @@ using System.Windows.Threading;
 namespace ClientTestSignalR_1.Services
 {
     /// <summary>
-    /// передача сообщения message в ObservableCollection<string> с указанием даты и времени
+    /// передача сообщения message ListBox с указанием даты и времени
     /// </summary>
     public class WriteMessageListService : IWriteMessageService
     {

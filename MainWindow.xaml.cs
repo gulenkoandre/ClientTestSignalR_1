@@ -1,4 +1,5 @@
-﻿using ClientTestSignalR_1.ViewModels;
+﻿using ClientTestSignalR_1.Services.Interfaces;
+using ClientTestSignalR_1.ViewModels;
 using Microsoft.AspNetCore.SignalR.Client;
 using System.Text;
 using System.Windows;
@@ -19,11 +20,13 @@ namespace ClientTestSignalR_1
     public partial class MainWindow : Window
     {       
         public MainWindow()
-        {            
+        {     
+            
             InitializeComponent();
 
             DataContext = new VM();                        
         }
-                
+
+        
     }
 }

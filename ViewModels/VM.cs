@@ -19,38 +19,25 @@ namespace ClientTestSignalR_1.ViewModels
     public class VM : BaseVM
     {
         #region == Constructor ====================================================================================================
-        public VM()
+        public VM ()//получение сервиса для работы с сервером
         {
-            //_dispatcher = Dispatcher.CurrentDispatcher;
-            
-            if (Program.host != null) 
-            {
-                //получаем сервис записи сообщений в ListBox 
-                //writeMessageListService = Program.host.Services.GetService<WriteMessageListService>();
 
+            if (Program.host != null) 
+            {         
                 //получаем сервис работы с сервером
                 connectionServer = Program.host.Services.GetService<ConnectionServer>();
-            }
-                        
+            }          
+
         }
 
         #endregion == Constructor ==
 
         #region == Fields ====================================================================================================
-
-        //HubConnection? connection; // объявляем подключение для работы с сервером (хабом)
-
-        //public Dispatcher _dispatcher; // для работы с элементами WPF в главном потоке
-
+        
         /// <summary>
-        /// //для получения из Хаба сервиса записи сообщений в ListBox
+        /// сервис для работы с сервером получаем в конструкторе класса
         /// </summary>
-        //public IWriteMessageService? writeMessageListService;
-
-        /// <summary>
-        /// сервис для работы с сервером
-        /// </summary>
-        public IConnectionService? connectionServer;
+        IConnectionService? connectionServer;
 
         #endregion == Fields ==
 
@@ -92,6 +79,9 @@ namespace ClientTestSignalR_1.ViewModels
         }
         bool _buttonDisconnectEnable = false;
 
+        /// <summary>
+        /// путь запроса в формате "/str"
+        /// </summary>
         public string RequestPath
         {
             get => _requestPath;
@@ -104,6 +94,9 @@ namespace ClientTestSignalR_1.ViewModels
         }
         string _requestPath = "/str";
 
+        /// <summary>
+        /// адрес сервера для подкдлючения в формате "https://localhost:7018"
+        /// </summary>
         public string ServerAddress
         {
             get => _serverAddress;
@@ -162,7 +155,7 @@ namespace ClientTestSignalR_1.ViewModels
         }
         string _inputMessage="";
 
-        // <summary>
+        /// <summary>
         /// история сообщений
         /// </summary>
         public ObservableCollection<string> MessageList
@@ -181,6 +174,9 @@ namespace ClientTestSignalR_1.ViewModels
 
         #region == Commands ===================================================================================================
 
+        /// <summary>
+        /// по кнопке Подключиться - подключение к серверу
+        /// </summary>
         DelegateCommand? commandConnect;
         public ICommand CommandConnect
         {
@@ -195,6 +191,9 @@ namespace ClientTestSignalR_1.ViewModels
 
         }
 
+        /// <summary>
+        ///по кнопке Стоп - отключиться от сервера
+        /// </summary>
         DelegateCommand? commandDisconnect;
         public ICommand CommandDisconnect
         {
@@ -209,6 +208,9 @@ namespace ClientTestSignalR_1.ViewModels
 
         }
 
+        /// <summary>
+        /// по кнопке Отправить - отправить сообщение на сервер
+        /// </summary>
         DelegateCommand? commandSendMessage;
         public ICommand CommandSendMessage
         {
@@ -227,37 +229,24 @@ namespace ClientTestSignalR_1.ViewModels
 
         #region == Methods for Commands ===================================================================================================
 
-        private void Connect(object? obj) //private async void Connect(object? obj)
-        {
-            //OpenConnectionServer(ServerAddress, RequestPath);
-            /*connection = new HubConnectionBuilder()
-                .WithUrl($"{ServerAddress}{RequestPath}")
-                .Build();*/
+        /// <summary>
+        /// подключение к серверу
+        /// </summary>
+        /// <param name="obj"></param>
+        private void Connect(object? obj)
+        {            
             try
-            {
-            
+            {            
                 if (connectionServer != null)
                 {
                     connectionServer.Address = $"{ServerAddress}{RequestPath}";
-
-                    //connectionServer.ConnectionObj = connection;
-
+                    
                     connectionServer.MessageListObj = MessageList;
 
-                    connectionServer.Connect();
-
-                    //connection = connectionServer.ConnectionObj as HubConnection;
+                    connectionServer.Connect();                                        
                 }
                             
-                ButtonConnectEnable = false;
-
-                //подключение к хабу
-               /* if (connection != null)
-                {
-                    await connection.StartAsync();
-                }
-
-                writeMessageListService?.WriteMessage(MessageList, "Соединение установлено");*/
+                ButtonConnectEnable = false;                
                                 
                 ButtonSendEnable = true;
 
@@ -277,24 +266,12 @@ namespace ClientTestSignalR_1.ViewModels
             {
                 ButtonDisconnectEnable = false;
 
-
                 if (connectionServer != null)
                 {
-                    //connectionServer.ConnectionObj = connection;
-
                     connectionServer.MessageListObj = MessageList;
 
-                    connectionServer.Disconnect();
-
-                    //connection = connectionServer.ConnectionObj as HubConnection;
-                }
-                //подключение к хабу
-                /*if (connection != null)
-                 {
-                     await connection.StopAsync();
-                 }               
-
-                 writeMessageListService?.WriteMessage(MessageList, "Соединение отключено");*/
+                    connectionServer.Disconnect();                                     
+                }                
 
                 ButtonConnectEnable = true;
 
@@ -327,32 +304,7 @@ namespace ClientTestSignalR_1.ViewModels
         #endregion == Methods for Commands ==
 
         #region == Methods ===================================================================================================
-
-        /*/// <summary>
-        /// Открыть соединение с сервером
-        /// </summary>
-        /// <param name="serverAddress">в формате "https://localhost:7018" </param>
-        /// <param name="requestPath"> путь запроса в формате "/chat" </param>
-        private void OpenConnectionServer (string serverAddress, string requestPath) // serverAddress в формате "https://localhost:7018", путь запроса в формате "/str"
-        {
-            //создание подключения к хабу
-            connection = new HubConnectionBuilder()
-                .WithUrl($"{serverAddress}{requestPath}")
-                .Build();
-
-            // регистрация функции Receive для получения данных
-            connection.On<string, string>("Receive", (user, message) =>
-            {
-                _dispatcher.Invoke(() =>
-                {
-                    string? newMessage = $"{user}: {message}";
-                    
-                    writeMessageListService?.WriteMessage(MessageList, newMessage);
-
-                });
-            });
-            
-        }*/
+                
         #endregion == Methods ==
 
     }

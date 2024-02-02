@@ -6,23 +6,21 @@ using System.Threading.Tasks;
 
 namespace ClientTestSignalR_1.Services.Interfaces
 {
+    /// <summary>
+    /// сервис передачи сообщений
+    /// </summary>
     public interface IConnectionService
     {
         /// <summary>
         /// адрес назначения соединения
         /// </summary>
         public string? Address { get; set;}
-
+       
         /// <summary>
-        /// объект соединения, передаваемый через object? например HubConnection? connection;
+        /// объект лога сообщений, передаваемый через object 
         /// </summary>
-       // public object? ConnectionObj { get; set; }
+        public object? MessageListObj{get; set;}
 
-        /// <summary>
-        /// объект лога сообщений, передаваемый через object? например ObservableCollection<string> MessageList
-        /// </summary>
-        public object? MessageListObj { get; set;}
-        
         /// <summary>
         /// запуск соединения
         /// </summary>
