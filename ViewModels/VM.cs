@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Runtime.ConstrainedExecution;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -225,6 +226,23 @@ namespace ClientTestSignalR_1.ViewModels
 
         }
 
+        /// <summary>
+        /// по кнопке Очистить - очистка чата
+        /// </summary>
+        DelegateCommand? сommandClear;
+        public ICommand CommandClear
+        {
+            get
+            {
+                if (сommandClear == null)
+                {
+                    сommandClear = new DelegateCommand(Clear);
+                }
+                return сommandClear;
+            }
+
+        }
+
         #endregion == Commands ==
 
         #region == Methods for Commands ===================================================================================================
@@ -260,6 +278,10 @@ namespace ClientTestSignalR_1.ViewModels
             }
         }
 
+        /// <summary>
+        /// отключение от сервера
+        /// </summary>
+        /// <param name="obj"></param>
         private void Disconnect(object? obj)
         {        
             try
@@ -285,6 +307,10 @@ namespace ClientTestSignalR_1.ViewModels
             }
         }
 
+        /// <summary>
+        /// отправить сообщение серверу
+        /// </summary>
+        /// <param name="obj"></param>
         private void SendMessage(object? obj)
         {
             try
@@ -301,10 +327,19 @@ namespace ClientTestSignalR_1.ViewModels
             }
         }
 
+        /// <summary>
+        /// очистка чата
+        /// </summary>
+        /// <param name="obj"></param>
+        private void Clear(object? obj)
+        {
+            MessageList.Clear();
+        }
+
         #endregion == Methods for Commands ==
 
         #region == Methods ===================================================================================================
-                
+
         #endregion == Methods ==
 
     }

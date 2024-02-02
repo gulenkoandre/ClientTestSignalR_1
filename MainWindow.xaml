@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ClientTestSignalR_1"
         mc:Ignorable="d"
-        Title="Chat" Height="515" Width="800" >
+        Title="Chat" Height="545" Width="800" >
     <Grid>
         <StackPanel Margin="10">
             
@@ -33,7 +33,12 @@
             <ListBox ItemsSource="{Binding MessageList}"
                      Height="220"
                      ScrollViewer.VerticalScrollBarVisibility="Visible"/>
-            
+
+            <Button Content="Очистить" 
+                    Margin="0,0,0,10"
+                    Command="{Binding CommandClear}"                    
+                     />
+
             <Button Content="Стоп" 
                     Command="{Binding CommandDisconnect}"
                     IsEnabled="{Binding ButtonDisconnectEnable}"
