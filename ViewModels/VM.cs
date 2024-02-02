@@ -21,11 +21,15 @@ namespace ClientTestSignalR_1.ViewModels
         #region == Constructor ====================================================================================================
         public VM()
         {
-            _dispatcher = Dispatcher.CurrentDispatcher;
+            //_dispatcher = Dispatcher.CurrentDispatcher;
             
-            if (Program.host != null) //получаем сервис записи сообщений в ListBox 
+            if (Program.host != null) 
             {
-                writeMessageListService = Program.host.Services.GetService<WriteMessageListService>();
+                //получаем сервис записи сообщений в ListBox 
+                //writeMessageListService = Program.host.Services.GetService<WriteMessageListService>();
+
+                //получаем сервис работы с сервером
+                connectionServer = Program.host.Services.GetService<ConnectionServer>();
             }
                         
         }
@@ -34,14 +38,19 @@ namespace ClientTestSignalR_1.ViewModels
 
         #region == Fields ====================================================================================================
 
-        HubConnection? connection; // объявляем подключение для работы с сервером (хабом)
+        //HubConnection? connection; // объявляем подключение для работы с сервером (хабом)
 
-        Dispatcher _dispatcher; // для работы с элементами WPF в главном потоке
+        //public Dispatcher _dispatcher; // для работы с элементами WPF в главном потоке
 
         /// <summary>
         /// //для получения из Хаба сервиса записи сообщений в ListBox
         /// </summary>
-        IWriteMessageService? writeMessageListService; 
+        //public IWriteMessageService? writeMessageListService;
+
+        /// <summary>
+        /// сервис для работы с сервером
+        /// </summary>
+        public IConnectionService? connectionServer;
 
         #endregion == Fields ==
 
@@ -218,21 +227,37 @@ namespace ClientTestSignalR_1.ViewModels
 
         #region == Methods for Commands ===================================================================================================
 
-        private async void Connect(object? obj)
+        private void Connect(object? obj) //private async void Connect(object? obj)
         {
-            OpenConnectionServer(ServerAddress, RequestPath);
-
+            //OpenConnectionServer(ServerAddress, RequestPath);
+            /*connection = new HubConnectionBuilder()
+                .WithUrl($"{ServerAddress}{RequestPath}")
+                .Build();*/
             try
             {
+            
+                if (connectionServer != null)
+                {
+                    connectionServer.Address = $"{ServerAddress}{RequestPath}";
+
+                    //connectionServer.ConnectionObj = connection;
+
+                    connectionServer.MessageListObj = MessageList;
+
+                    connectionServer.Connect();
+
+                    //connection = connectionServer.ConnectionObj as HubConnection;
+                }
+                            
                 ButtonConnectEnable = false;
 
                 //подключение к хабу
-                if (connection != null)
+               /* if (connection != null)
                 {
                     await connection.StartAsync();
                 }
 
-                writeMessageListService?.WriteMessage(MessageList, "Соединение установлено");
+                writeMessageListService?.WriteMessage(MessageList, "Соединение установлено");*/
                                 
                 ButtonSendEnable = true;
 
@@ -246,19 +271,30 @@ namespace ClientTestSignalR_1.ViewModels
             }
         }
 
-        private async void Disconnect(object? obj)
+        private void Disconnect(object? obj)
         {        
             try
             {
                 ButtonDisconnectEnable = false;
 
-                //подключение к хабу
-                if (connection != null)
-                {
-                    await connection.StopAsync();
-                }               
 
-                writeMessageListService?.WriteMessage(MessageList, "Соединение отключено");
+                if (connectionServer != null)
+                {
+                    //connectionServer.ConnectionObj = connection;
+
+                    connectionServer.MessageListObj = MessageList;
+
+                    connectionServer.Disconnect();
+
+                    //connection = connectionServer.ConnectionObj as HubConnection;
+                }
+                //подключение к хабу
+                /*if (connection != null)
+                 {
+                     await connection.StopAsync();
+                 }               
+
+                 writeMessageListService?.WriteMessage(MessageList, "Соединение отключено");*/
 
                 ButtonConnectEnable = true;
 
@@ -272,16 +308,15 @@ namespace ClientTestSignalR_1.ViewModels
             }
         }
 
-        private async void SendMessage(object? obj)
+        private void SendMessage(object? obj)
         {
             try
             {
-                //отправка сообщения
-                if (connection != null)
+                //отправка сообщения на сервер
+                if (connectionServer != null)
                 {
-                    await connection.InvokeAsync("Send", Nickname, OutputMessage);
-                }
-                
+                    connectionServer.SendMessage(Nickname, OutputMessage);
+                }                
             }
             catch (Exception ex)
             {
@@ -293,7 +328,7 @@ namespace ClientTestSignalR_1.ViewModels
 
         #region == Methods ===================================================================================================
 
-        /// <summary>
+        /*/// <summary>
         /// Открыть соединение с сервером
         /// </summary>
         /// <param name="serverAddress">в формате "https://localhost:7018" </param>
@@ -317,7 +352,7 @@ namespace ClientTestSignalR_1.ViewModels
                 });
             });
             
-        }
+        }*/
         #endregion == Methods ==
 
     }

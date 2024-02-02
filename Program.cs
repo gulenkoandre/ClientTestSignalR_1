@@ -25,6 +25,7 @@ namespace ClientTestSignalR_1
                     services.AddSingleton<MainWindow>();
 
                     services.AddTransient<WriteMessageListService>();
+                    services.AddTransient<ConnectionServer>();
                 })
                 .Build();
             
