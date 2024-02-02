@@ -1,19 +1,11 @@
 ﻿using ClientTestSignalR_1.Commands;
 using ClientTestSignalR_1.Services;
 using ClientTestSignalR_1.Services.Interfaces;
-using Microsoft.AspNetCore.SignalR.Client;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Runtime.ConstrainedExecution;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
-using System.Windows.Threading;
+
 
 namespace ClientTestSignalR_1.ViewModels
 {
@@ -79,7 +71,7 @@ namespace ClientTestSignalR_1.ViewModels
             }
         }
         bool _buttonDisconnectEnable = false;
-
+        
         /// <summary>
         /// путь запроса в формате "/str"
         /// </summary>
@@ -90,7 +82,7 @@ namespace ClientTestSignalR_1.ViewModels
             set
             {
                 _requestPath = value;
-                OnPropertyChanged(nameof(RequestPath));
+                OnPropertyChanged(nameof(RequestPath));                
             }
         }
         string _requestPath = "/str";
@@ -105,7 +97,7 @@ namespace ClientTestSignalR_1.ViewModels
             set
             {
                 _serverAddress = value;
-                OnPropertyChanged(nameof(ServerAddress));
+                OnPropertyChanged(nameof(ServerAddress));                
             }
         }
         string _serverAddress = "https://localhost:7018";
@@ -139,22 +131,7 @@ namespace ClientTestSignalR_1.ViewModels
                 OnPropertyChanged(nameof(OutputMessage));
             }
         }
-        string _outputMessage = "Test";
-
-        /// <summary>
-        /// входящее сообщение
-        /// </summary>
-        public string InputMessage
-        {
-            get => _inputMessage;
-
-            set
-            {
-                _inputMessage = value;
-                OnPropertyChanged(nameof(InputMessage));
-            }
-        }
-        string _inputMessage="";
+        string _outputMessage = "Test";               
 
         /// <summary>
         /// история сообщений

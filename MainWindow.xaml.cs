@@ -27,6 +27,9 @@ namespace ClientTestSignalR_1
             DataContext = new VM();                        
         }
 
-        
+        private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+
+        }
     }
 }

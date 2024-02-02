@@ -10,14 +10,22 @@
         <StackPanel Margin="10">
             
             <Label Content="Адрес сервера (в формате https://localhost:7018)"/>
-            <TextBox Text="{Binding ServerAddress}" />
+            <TextBox Text="{Binding ServerAddress}" 
+                     />
             
             <Label Content="Путь запроса (в формате /str)"/>
-            <TextBox Text="{Binding RequestPath}" /> 
+            <TextBox Text="{Binding RequestPath}" 
+                     /> 
             
             <Button Content="Подключиться" 
                     Command="{Binding CommandConnect}"
                     IsEnabled="{Binding ButtonConnectEnable}"
+                     />
+            
+            <Button Content="Стоп" 
+                    Margin="0,10,0,0"
+                    Command="{Binding CommandDisconnect}"
+                    IsEnabled="{Binding ButtonDisconnectEnable}"
                      />
             
             <Label Content="Ваш nickname:"/>
@@ -38,14 +46,6 @@
                     Margin="0,0,0,10"
                     Command="{Binding CommandClear}"                    
                      />
-
-            <Button Content="Стоп" 
-                    Command="{Binding CommandDisconnect}"
-                    IsEnabled="{Binding ButtonDisconnectEnable}"
-                     />
-
-
-
         </StackPanel>
 
     </Grid>

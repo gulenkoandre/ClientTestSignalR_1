@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Threading;
 
 namespace ClientTestSignalR_1.Services
@@ -46,44 +47,56 @@ namespace ClientTestSignalR_1.Services
         /// <summary>
         /// адрес назначения соединения
         /// </summary>
-        public string? Address { get; set;}
+        public string? Address
+        {
+            get; set;
+        }
 
         /// <summary>
         /// объект лога сообщений, передаваемый через object
         /// </summary>
-        public object? MessageListObj { get; set;}
-        
+        public object? MessageListObj
+        {
+            get; set;
+        }
+
         /// <summary>
         /// установление соединения
         /// </summary>
         public async void Connect()
-        {            
-            //создание подключения к хабу
-            connection= new HubConnectionBuilder() 
-                .WithUrl($"{Address}")
-                .Build();
-            
-            // регистрация функции Receive для получения данных с сервера
-            connection?.On<string, string>("Receive", (user, message) =>
+        {
+            try
             {
-                Dispatcher.CurrentDispatcher.Invoke(() =>
+                //создание подключения к хабу
+                connection = new HubConnectionBuilder()
+                    .WithUrl($"{Address}")
+                    .Build();
+
+                // регистрация функции Receive для получения данных с сервера
+                connection?.On<string, string>("Receive", (user, message) =>
                 {
-                    string? newMessage = $"{user}: {message}";
-
-                    if (writeMessageListService != null) //добавлние сообщения в чат
+                    Dispatcher.CurrentDispatcher.Invoke(() =>
                     {
-                        writeMessageListService?.WriteMessage(MessageListObj, newMessage);
-                    }
+                        string? newMessage = $"{user}: {message}";
+
+                        if (writeMessageListService != null) //добавлние сообщения в чат
+                        {
+                            writeMessageListService?.WriteMessage(MessageListObj, newMessage);
+                        }
+                    });
                 });
-            });
-                        
-            if (connection != null)
-             {
-                 await connection.StartAsync();
-             }
 
-             writeMessageListService?.WriteMessage(MessageListObj, "Соединение установлено");
+                if (connection != null)
+                {
+                    await connection.StartAsync();
+                }
 
+                writeMessageListService?.WriteMessage(MessageListObj, "Соединение установлено");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
 
         /// <summary>
@@ -93,11 +106,11 @@ namespace ClientTestSignalR_1.Services
         {
             //отключение
             if (connection != null)
-             {
-                 await connection.StopAsync();
-             }               
+            {
+                await connection.StopAsync();
+            }
 
-             writeMessageListService?.WriteMessage(MessageListObj, "Соединение отключено");
+            writeMessageListService?.WriteMessage(MessageListObj, "Соединение отключено");
         }
 
         /// <summary>
@@ -107,10 +120,18 @@ namespace ClientTestSignalR_1.Services
         /// <param name="message">сообщение</param>
         public async void SendMessage(string nickname, string message)
         {
-            if (connection != null)
+            try
             {
-                await connection.InvokeAsync("Send", nickname, message);
+                if (connection != null)
+                {
+                    await connection.InvokeAsync("Send", nickname, message);
+                }
             }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);                
+            }
+            
         }
     }
 }
