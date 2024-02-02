@@ -19,10 +19,9 @@ namespace ClientTestSignalR_1
     public partial class MainWindow : Window
     {       
         public MainWindow()
-        {            
-            InitializeComponent();
-
-            DataContext = new VM();                        
+        {
+            //InitializeComponent();
+            DataContext = new VM();
         }
                 
     }

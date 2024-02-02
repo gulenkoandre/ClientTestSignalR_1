@@ -13,7 +13,7 @@ namespace ClientTestSignalR_1
     /// Interaction logic for App.xaml
     /// </summary>
     public partial class App : Application
-    {
+    {     
         //создаем Хост
         private static IHost? _host;
         public static IHost Host => _host ??= Program.CreateHostBuilder(Environment.GetCommandLineArgs()).Build(); //при первом обращении Хост будет создан, будут сконфигурированы все его сервисы и  ими можно пользоваться
@@ -22,7 +22,7 @@ namespace ClientTestSignalR_1
 
         //при запуске приложения, мы запускаем и Хост
         protected override async void OnStartup(StartupEventArgs e)
-        {
+        {            
             IHost host = Host;
 
             base.OnStartup(e);
@@ -53,6 +53,7 @@ namespace ClientTestSignalR_1
         {
             //здесь добавляем все сервисы, которые нам потребуются для дальнейшей работы
             services.AddSingleton<MainWindow>();
+
             services.AddSingleton<VM>();
 
             //AddTransient() создает transient-объекты. Такие объекты создаются при каждом обращении к ним.
