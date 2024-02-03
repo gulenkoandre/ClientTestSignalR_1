@@ -3,11 +3,7 @@ using ClientTestSignalR_1.Services.Interfaces;
 using ClientTestSignalR_1.ViewModels;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace ClientTestSignalR_1
 {
@@ -24,9 +20,13 @@ namespace ClientTestSignalR_1
                 {
                     services.AddSingleton<App>();
                     services.AddSingleton<MainWindow>();
-                 
-                    services.AddSingleton<WriteMessageListService>();
-                    services.AddSingleton<ConnectionServer>();
+
+                    //Services
+                    services.AddSingleton<IWriteMessageService, WriteMessageListService>();
+                    services.AddSingleton<IConnectionService, ConnectionServer>();
+
+                    //ViewModels
+                    services.AddTransient<VM>();
                 })
                 .Build();
             

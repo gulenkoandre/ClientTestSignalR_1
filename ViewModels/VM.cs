@@ -1,5 +1,4 @@
 ﻿using ClientTestSignalR_1.Commands;
-using ClientTestSignalR_1.Services;
 using ClientTestSignalR_1.Services.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 using System.Collections.ObjectModel;
@@ -12,15 +11,20 @@ namespace ClientTestSignalR_1.ViewModels
     public class VM : BaseVM
     {
         #region == Constructor ====================================================================================================
-        public VM ()//получение сервиса для работы с сервером
+        public VM ()
         {
-
             if (Program.host != null) 
             {         
                 //получаем сервис работы с сервером
-                connectionServer = Program.host.Services.GetService<ConnectionServer>();
-            }          
+                connectionServer = Program.host.Services.GetService<IConnectionService> ();
 
+                if (connectionServer != null)
+                {
+                    connectionServer.Address = $"{ServerAddress}{RequestPath}";
+
+                    connectionServer.MessageListObj = MessageList;
+                }
+            }          
         }
 
         #endregion == Constructor ==
@@ -82,7 +86,11 @@ namespace ClientTestSignalR_1.ViewModels
             set
             {
                 _requestPath = value;
-                OnPropertyChanged(nameof(RequestPath));                
+                OnPropertyChanged(nameof(RequestPath));
+                if (connectionServer != null)
+                {
+                    connectionServer.Address = $"{ServerAddress}{RequestPath}";
+                }
             }
         }
         string _requestPath = "/str";
@@ -97,7 +105,11 @@ namespace ClientTestSignalR_1.ViewModels
             set
             {
                 _serverAddress = value;
-                OnPropertyChanged(nameof(ServerAddress));                
+                OnPropertyChanged(nameof(ServerAddress));
+                if (connectionServer != null)
+                {
+                    connectionServer.Address = $"{ServerAddress}{RequestPath}";
+                }
             }
         }
         string _serverAddress = "https://localhost:7018";
@@ -144,6 +156,10 @@ namespace ClientTestSignalR_1.ViewModels
             {
                 _messageList = value;
                 OnPropertyChanged(nameof(MessageList));
+                if (connectionServer != null)
+                {
+                    connectionServer.MessageListObj = MessageList;
+                }
             }
         }
         ObservableCollection<string> _messageList = new ObservableCollection<string>();
@@ -166,7 +182,6 @@ namespace ClientTestSignalR_1.ViewModels
                 }
                 return commandConnect;
             }
-
         }
 
         /// <summary>
@@ -217,7 +232,6 @@ namespace ClientTestSignalR_1.ViewModels
                 }
                 return сommandClear;
             }
-
         }
 
         #endregion == Commands ==
@@ -229,29 +243,20 @@ namespace ClientTestSignalR_1.ViewModels
         /// </summary>
         /// <param name="obj"></param>
         private void Connect(object? obj)
-        {            
-            try
-            {            
-                if (connectionServer != null)
-                {
-                    connectionServer.Address = $"{ServerAddress}{RequestPath}";
-                    
-                    connectionServer.MessageListObj = MessageList;
+        {
+            if (connectionServer != null)
+            {                
+                ButtonConnectEnable = false;
 
-                    connectionServer.Connect();                                        
-                }
-                            
-                ButtonConnectEnable = false;                
-                                
                 ButtonSendEnable = true;
 
                 ButtonDisconnectEnable = true;
-            }
-            catch (Exception ex)
-            {
-                ButtonConnectEnable = true;
 
-                MessageBox.Show(ex.Message); 
+                connectionServer.Connect();
+            }
+            else
+            {
+                MessageBox.Show("\"Сервис подключения к серверу не активирован");
             }
         }
 
@@ -260,28 +265,21 @@ namespace ClientTestSignalR_1.ViewModels
         /// </summary>
         /// <param name="obj"></param>
         private void Disconnect(object? obj)
-        {        
-            try
-            {
-                ButtonDisconnectEnable = false;
-
-                if (connectionServer != null)
+        {
+            if (connectionServer != null)
                 {
-                    connectionServer.MessageListObj = MessageList;
+                    connectionServer.Disconnect();
 
-                    connectionServer.Disconnect();                                     
-                }                
+                    ButtonDisconnectEnable = false;
 
-                ButtonConnectEnable = true;
+                    ButtonConnectEnable = true;
 
-                ButtonSendEnable = false;
+                    ButtonSendEnable = false;
             }
-            catch (Exception ex)
+            else
             {
-                ButtonDisconnectEnable = true;
-
-                MessageBox.Show(ex.Message); 
-            }
+                MessageBox.Show("\"Сервис подключения к серверу не активирован");
+            }            
         }
 
         /// <summary>
@@ -290,18 +288,16 @@ namespace ClientTestSignalR_1.ViewModels
         /// <param name="obj"></param>
         private void SendMessage(object? obj)
         {
-            try
+           
+          //отправка сообщения на сервер
+            if (connectionServer != null)
             {
-                //отправка сообщения на сервер
-                if (connectionServer != null)
-                {
-                    connectionServer.SendMessage(Nickname, OutputMessage);
-                }                
+                connectionServer.SendMessage(Nickname, OutputMessage);
             }
-            catch (Exception ex)
+            else
             {
-                MessageBox.Show(ex.Message);                 
-            }
+                MessageBox.Show("Сервис подключения к серверу не активирован. Нажмите Стоп и проверьте параметры подключения");
+            }            
         }
 
         /// <summary>

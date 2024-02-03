@@ -31,7 +31,7 @@ namespace ClientTestSignalR_1.Services
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                MessageBox.Show($"Попытка вывода сообщения завершилась с ошибкой: {ex.Message}");
             }
         }
     }
