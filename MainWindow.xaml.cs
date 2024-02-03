@@ -1,12 +1,7 @@
-﻿using ClientTestSignalR_1.Services.Interfaces;
+﻿
 using ClientTestSignalR_1.ViewModels;
-using Microsoft.AspNetCore.SignalR.Client;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using System.Text;
 using System.Windows;
-using System.Windows.Controls;
-
 
 namespace ClientTestSignalR_1
 {

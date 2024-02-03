@@ -1,12 +1,5 @@
 ﻿using ClientTestSignalR_1.Services.Interfaces;
-using ClientTestSignalR_1.ViewModels;
 using Microsoft.AspNetCore.SignalR.Client;
-using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Threading;
 
