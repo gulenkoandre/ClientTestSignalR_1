@@ -16,8 +16,9 @@ namespace ClientTestSignalR_1.ViewModels
             if (Program.host != null) 
             {         
                 //получаем сервис работы с сервером
-                connectionServer = Program.host.Services.GetService<IConnectionService> ();
+                connectionServer = Program.host.Services.GetService<IConnectionService>();
 
+                // передача начальных данных в сервисы через свойства
                 if (connectionServer != null)
                 {
                     connectionServer.Address = $"{ServerAddress}{RequestPath}";
