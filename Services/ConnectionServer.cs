@@ -9,9 +9,7 @@ namespace ClientTestSignalR_1.Services
     /// сервис передачи сообщений на сервер посредством HubConnection
     /// </summary>
     class ConnectionServer : IConnectionService
-    {
-        private readonly IWriteMessageService? writeMessageListService;
-        
+    {        
         #region == Constructor ==========================================================================================
 
         public ConnectionServer (IWriteMessageService writeMessageListService)
@@ -23,6 +21,8 @@ namespace ClientTestSignalR_1.Services
 
         #region == Fields ==========================================================================================
         
+        private readonly IWriteMessageService? writeMessageListService;
+
         /// <summary>
         /// текущее соединение
         /// </summary>

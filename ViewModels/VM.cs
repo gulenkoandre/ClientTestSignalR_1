@@ -11,21 +11,14 @@ namespace ClientTestSignalR_1.ViewModels
     public class VM : BaseVM
     {
         #region == Constructor ====================================================================================================
-        public VM ()
+        public VM (IConnectionService connectionService)
         {
-            if (Program.host != null) 
-            {         
-                //получаем сервис работы с сервером
-                connectionServer = Program.host.Services.GetService<IConnectionService>();
+            connectionServer = connectionService;
+            
+            connectionServer.Address = $"{ServerAddress}{RequestPath}";
 
-                // передача начальных данных в сервисы через свойства
-                if (connectionServer != null)
-                {
-                    connectionServer.Address = $"{ServerAddress}{RequestPath}";
-
-                    connectionServer.MessageListObj = MessageList;
-                }
-            }          
+            connectionServer.MessageListObj = MessageList;
+            
         }
 
         #endregion == Constructor ==
@@ -35,7 +28,7 @@ namespace ClientTestSignalR_1.ViewModels
         /// <summary>
         /// сервис для работы с сервером получаем в конструкторе класса
         /// </summary>
-        IConnectionService? connectionServer;
+        private readonly IConnectionService connectionServer;
 
         #endregion == Fields ==
 
